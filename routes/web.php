@@ -9,6 +9,7 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\SaleController;
+use App\Http\Controllers\ReportController;
 
 // Only for visitors who are NOT logged in
 Route::middleware('guest')->group(function () {
@@ -38,3 +39,6 @@ Route::resource('suppliers', SupplierController::class)->except(['show']);
 Route::resource('products', ProductController::class)->except(['show']);
 Route::resource('purchases', PurchaseController::class)->only(['index', 'create', 'store']);
 Route::resource('sales', SaleController::class)->only(['index', 'create', 'store', 'show']);
+Route::get('/reports', [ReportController::class, 'index'])
+    ->middleware('admin')
+    ->name('reports.index');

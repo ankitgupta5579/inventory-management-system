@@ -2,8 +2,8 @@
 @section('title', 'Reports & Analysis')
 
 @section('content')
-{{-- Filter --}}
-<form method="GET" class="card p-3 mb-3">
+{{-- Filter (hidden when printing) --}}
+<form method="GET" class="card p-3 mb-3 no-print">
     <div class="row g-2 align-items-end">
         <div class="col-md-3">
             <label class="form-label">Report Type</label>
@@ -32,7 +32,7 @@
 <div class="row g-3 mb-3">
     <div class="col-md-4"><div class="card p-3"><div class="text-muted small">Total Sales</div><h4>₹{{ number_format($totalSales ?? 0, 2) }}</h4></div></div>
     <div class="col-md-4"><div class="card p-3"><div class="text-muted small">Total Purchases</div><h4>₹{{ number_format($totalPurchases ?? 0, 2) }}</h4></div></div>
-    <div class="col-md-4"><div class="card p-3"><div class="text-muted small">Profit</div><h4 class="text-success">₹{{ number_format($profit ?? 0, 2) }}</h4></div></div>
+    <div class="col-md-4"><div class="card p-3"><div class="text-muted small">Gross Profit</div><h4 class="text-success">₹{{ number_format($profit ?? 0, 2) }}</h4></div></div>
 </div>
 
 {{-- Result table --}}

@@ -26,3 +26,7 @@ body { background: #f4f6fb; font-family: 'Segoe UI', sans-serif; }
     .sidebar { display: none; }
     .main-content { margin-left: 0; }
 }
+@media print {
+    .sidebar, .top-navbar, .no-print { display: none !important; }
+    .main-content { margin-left: 0 !important; }
+}
