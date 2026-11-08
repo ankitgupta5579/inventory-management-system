@@ -6,14 +6,15 @@
         <li><a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">
             <i class="bi bi-speedometer2"></i> Dashboard</a></li>
 
-        {{-- TODO: un-comment each link when its module is built
         <li class="section-title">Data Management</li>
-        <li><a class="nav-link {{ request()->routeIs('products.*') ? 'active' : '' }}" href="{{ route('products.index') }}">
-            <i class="bi bi-box"></i> Products</a></li>
         <li><a class="nav-link {{ request()->routeIs('categories.*') ? 'active' : '' }}" href="{{ route('categories.index') }}">
             <i class="bi bi-tags"></i> Categories</a></li>
         <li><a class="nav-link {{ request()->routeIs('suppliers.*') ? 'active' : '' }}" href="{{ route('suppliers.index') }}">
             <i class="bi bi-truck"></i> Suppliers</a></li>
+
+        {{-- TODO: un-comment each link when its module is built
+        <li><a class="nav-link {{ request()->routeIs('products.*') ? 'active' : '' }}" href="{{ route('products.index') }}">
+            <i class="bi bi-box"></i> Products</a></li>
 
         <li class="section-title">Transactions</li>
         <li><a class="nav-link {{ request()->routeIs('purchases.*') ? 'active' : '' }}" href="{{ route('purchases.index') }}">

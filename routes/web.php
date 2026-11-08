@@ -4,6 +4,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\SupplierController;
 
 // Only for visitors who are NOT logged in
 Route::middleware('guest')->group(function () {
@@ -27,3 +29,6 @@ Route::middleware('auth')->group(function () {
         Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
     });
 });
+
+Route::resource('categories', CategoryController::class)->except(['create', 'show', 'edit']);
+Route::resource('suppliers', SupplierController::class)->except(['show']);
