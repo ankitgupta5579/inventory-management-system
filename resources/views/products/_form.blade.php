@@ -44,7 +44,7 @@
     </div>
     <div class="col-md-3">
         <label class="form-label">Opening Stock</label>
-        <input type="number" name="quantity" value="{{ old('quantity', $product->quantity ?? 0) }}" class="form-control" required>
+       <input type="number" name="quantity" value="{{ old('quantity', $product->quantity ?? 0) }}" class="form-control" required {{ $product ? 'readonly' : '' }}>
     </div>
     <div class="col-md-3">
         <label class="form-label">Reorder Level</label>

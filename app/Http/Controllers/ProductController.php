@@ -7,6 +7,8 @@ use App\Models\Product;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use App\Models\StockMovement;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -35,12 +37,26 @@ class ProductController extends Controller
     }
 
     public function store(Request $request)
-    {
-        Product::create($request->validate($this->rules()));
+{
+    $data = $request->validate($this->rules());
 
-        return redirect()->route('products.index')
-            ->with('success', 'Product added.');
-    }
+    DB::transaction(function () use ($data) {
+        $product = Product::create($data);
+
+        // Opening stock is also a stock movement, so history adds up
+        if ($product->quantity > 0) {
+            StockMovement::create([
+                'product_id' => $product->id,
+                'user_id'    => auth()->id(),
+                'type'       => 'opening',
+                'quantity'   => $product->quantity,
+            ]);
+        }
+    });
+
+    return redirect()->route('products.index')
+        ->with('success', 'Product added.');
+}
 
     public function edit(Product $product)
     {
@@ -52,12 +68,16 @@ class ProductController extends Controller
     }
 
     public function update(Request $request, Product $product)
-    {
-        $product->update($request->validate($this->rules($product->id)));
+{
+    $data = $request->validate($this->rules($product->id));
 
-        return redirect()->route('products.index')
-            ->with('success', 'Product updated.');
-    }
+    unset($data['quantity']); // stock is never changed from this form
+
+    $product->update($data);
+
+    return redirect()->route('products.index')
+        ->with('success', 'Product updated.');
+}
 
     public function destroy(Product $product)
     {

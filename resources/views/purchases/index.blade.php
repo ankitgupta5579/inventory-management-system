@@ -14,7 +14,7 @@
             @forelse($purchases as $purchase)
                 <tr>
                     <td>#{{ $purchase->id }}</td>
-                    <td>{{ $purchase->created_at->format('d M Y') }}</td>
+                    <td>{{ $purchase->purchase_date->format('d M Y') }}</td>
                     <td>{{ $purchase->supplier->name ?? '-' }}</td>
                     <td>₹{{ number_format($purchase->total, 2) }}</td>
                     <td><span class="badge bg-success">{{ ucfirst($purchase->status ?? 'received') }}</span></td>

@@ -14,10 +14,11 @@
         <li><a class="nav-link {{ request()->routeIs('suppliers.*') ? 'active' : '' }}" href="{{ route('suppliers.index') }}">
             <i class="bi bi-truck"></i> Suppliers</a></li>
 
-        {{-- TODO: un-comment each link when its module is built
         <li class="section-title">Transactions</li>
         <li><a class="nav-link {{ request()->routeIs('purchases.*') ? 'active' : '' }}" href="{{ route('purchases.index') }}">
             <i class="bi bi-cart-plus"></i> Purchases</a></li>
+
+        {{-- TODO: un-comment each link when its module is built
         <li><a class="nav-link {{ request()->routeIs('sales.*') ? 'active' : '' }}" href="{{ route('sales.index') }}">
             <i class="bi bi-receipt"></i> Sales & Billing</a></li>
 
