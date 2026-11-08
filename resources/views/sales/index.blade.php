@@ -13,8 +13,8 @@
             <tbody>
             @forelse($sales as $sale)
                 <tr>
-                    <td>#{{ $sale->id }}</td>
-                    <td>{{ $sale->created_at->format('d M Y') }}</td>
+                    <td><a href="{{ route('sales.show', $sale) }}">#{{ $sale->id }}</a></td>
+                    <td>{{ $sale->sale_date->format('d M Y') }}</td>
                     <td>{{ $sale->customer_name }}</td>
                     <td>₹{{ number_format($sale->total, 2) }}</td>
                 </tr>

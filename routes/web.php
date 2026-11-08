@@ -8,6 +8,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PurchaseController;
+use App\Http\Controllers\SaleController;
 
 // Only for visitors who are NOT logged in
 Route::middleware('guest')->group(function () {
@@ -36,3 +37,4 @@ Route::resource('categories', CategoryController::class)->except(['create', 'sho
 Route::resource('suppliers', SupplierController::class)->except(['show']);
 Route::resource('products', ProductController::class)->except(['show']);
 Route::resource('purchases', PurchaseController::class)->only(['index', 'create', 'store']);
+Route::resource('sales', SaleController::class)->only(['index', 'create', 'store', 'show']);

@@ -17,11 +17,10 @@
         <li class="section-title">Transactions</li>
         <li><a class="nav-link {{ request()->routeIs('purchases.*') ? 'active' : '' }}" href="{{ route('purchases.index') }}">
             <i class="bi bi-cart-plus"></i> Purchases</a></li>
-
-        {{-- TODO: un-comment each link when its module is built
         <li><a class="nav-link {{ request()->routeIs('sales.*') ? 'active' : '' }}" href="{{ route('sales.index') }}">
             <i class="bi bi-receipt"></i> Sales & Billing</a></li>
 
+        {{-- TODO: un-comment when Reports is built
         <li class="section-title">Analysis</li>
         <li><a class="nav-link {{ request()->routeIs('reports.*') ? 'active' : '' }}" href="{{ route('reports.index') }}">
             <i class="bi bi-graph-up"></i> Reports</a></li>
