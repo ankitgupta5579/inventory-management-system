@@ -8,10 +8,9 @@ class Supplier extends Model
 {
     protected $fillable = ['name', 'phone', 'email', 'address'];
 
-    // One supplier supplies many products (Product model comes later)
+    // One supplier supplies many products
     public function products()
     {
         return $this->hasMany(Product::class);
     }
-}
 }
