@@ -11,8 +11,8 @@ class CategoryController extends Controller
     public function index()
     {
         return view('categories.index', [
-            'categories' => Category::latest()->get(),
-        ]);
+        'categories' => Category::withCount('products')->latest()->get(),
+    ]);
     }
 
     public function store(Request $request)
@@ -42,8 +42,12 @@ class CategoryController extends Controller
 
     public function destroy(Category $category)
     {
+        if ($category->products()->exists()) {
+        return back()->with('error', 'Cannot delete: this category still has products.');
+        }
+
         $category->delete();
 
-        return back()->with('success', 'Category deleted.');
+    return back()->with('success', 'Category deleted.');
     }
 }
