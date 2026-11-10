@@ -22,7 +22,7 @@ class PurchaseController extends Controller
     {
         return view('purchases.create', [
             'suppliers' => Supplier::orderBy('name')->get(),
-            'products'  => Product::orderBy('name')->get(),
+            'products' => Product::orderBy('name')->get(),
         ]);
     }
 
@@ -31,39 +31,39 @@ class PurchaseController extends Controller
         $lines = count((array) $request->product_id);
 
         $data = $request->validate([
-            'supplier_id'  => 'required|exists:suppliers,id',
-            'date'         => 'required|date',
-            'product_id'   => 'required|array|min:1',
+            'supplier_id' => 'required|exists:suppliers,id',
+            'date' => 'required|date',
+            'product_id' => 'required|array|min:1',
             'product_id.*' => 'required|exists:products,id',
-            'quantity'     => "required|array|size:$lines",
-            'quantity.*'   => 'required|integer|min:1',
-            'price'        => "required|array|size:$lines",
-            'price.*'      => 'required|numeric|min:0',
+            'quantity' => "required|array|size:$lines",
+            'quantity.*' => 'required|integer|min:1',
+            'price' => "required|array|size:$lines",
+            'price.*' => 'required|numeric|min:0',
         ]);
 
         DB::transaction(function () use ($data) {
             $purchase = Purchase::create([
-                'supplier_id'   => $data['supplier_id'],
-                'user_id'       => auth()->id(),
+                'supplier_id' => $data['supplier_id'],
+                'user_id' => auth()->id(),
                 'purchase_date' => $data['date'],
-                'total'         => 0,
-                'status'        => 'received',
+                'total' => 0,
+                'status' => 'received',
             ]);
 
             $total = 0;
 
             foreach ($data['product_id'] as $i => $productId) {
-                $qty      = (int) $data['quantity'][$i];
-                $price    = (float) $data['price'][$i];
+                $qty = (int) $data['quantity'][$i];
+                $price = (float) $data['price'][$i];
                 $subtotal = round($qty * $price, 2);
-                $total   += $subtotal;
+                $total += $subtotal;
 
                 // 1. Save the line item
                 $purchase->items()->create([
                     'product_id' => $productId,
-                    'quantity'   => $qty,
+                    'quantity' => $qty,
                     'unit_price' => $price,
-                    'subtotal'   => $subtotal,
+                    'subtotal' => $subtotal,
                 ]);
 
                 // 2. Increase stock
@@ -71,10 +71,10 @@ class PurchaseController extends Controller
 
                 // 3. Record the history
                 StockMovement::create([
-                    'product_id'   => $productId,
-                    'user_id'      => auth()->id(),
-                    'type'         => 'purchase',
-                    'quantity'     => $qty,
+                    'product_id' => $productId,
+                    'user_id' => auth()->id(),
+                    'type' => 'purchase',
+                    'quantity' => $qty,
                     'reference_id' => $purchase->id,
                 ]);
             }

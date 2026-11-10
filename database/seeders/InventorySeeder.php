@@ -48,21 +48,21 @@ class InventorySeeder extends Seeder
 
         foreach ($products as [$sku, $name, $category, $supplier, $cost, $price, $qty, $reorder]) {
             $product = Product::firstOrCreate(['sku' => $sku], [
-                'name'           => $name,
-                'category_id'    => $categories[$category]->id,
-                'supplier_id'    => $suppliers[$supplier]->id,
+                'name' => $name,
+                'category_id' => $categories[$category]->id,
+                'supplier_id' => $suppliers[$supplier]->id,
                 'purchase_price' => $cost,
-                'selling_price'  => $price,
-                'quantity'       => $qty,
-                'reorder_level'  => $reorder,
+                'selling_price' => $price,
+                'quantity' => $qty,
+                'reorder_level' => $reorder,
             ]);
 
             // Opening stock is also a stock movement, so history adds up
             if ($product->wasRecentlyCreated) {
                 StockMovement::create([
                     'product_id' => $product->id,
-                    'type'       => 'opening',
-                    'quantity'   => $qty,
+                    'type' => 'opening',
+                    'quantity' => $qty,
                 ]);
             }
         }

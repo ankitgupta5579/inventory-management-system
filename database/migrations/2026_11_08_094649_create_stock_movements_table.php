@@ -10,17 +10,17 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-{
-    Schema::create('stock_movements', function (Blueprint $table) {
-        $table->id();
-        $table->foreignId('product_id')->constrained()->restrictOnDelete();
-        $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
-        $table->string('type', 20);          // opening, purchase, sale, return, adjustment
-        $table->integer('quantity');         // + stock in, - stock out
-        $table->unsignedBigInteger('reference_id')->nullable(); // purchase or sale id
-        $table->timestamps();
-    });
-}
+    {
+        Schema::create('stock_movements', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('product_id')->constrained()->restrictOnDelete();
+            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
+            $table->string('type', 20);          // opening, purchase, sale, return, adjustment
+            $table->integer('quantity');         // + stock in, - stock out
+            $table->unsignedBigInteger('reference_id')->nullable(); // purchase or sale id
+            $table->timestamps();
+        });
+    }
 
     /**
      * Reverse the migrations.

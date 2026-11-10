@@ -15,19 +15,19 @@ class ReportController extends Controller
         $request->validate([
             'type' => 'nullable|in:sales,purchases,stock',
             'from' => 'nullable|date',
-            'to'   => 'nullable|date|after_or_equal:from',
+            'to' => 'nullable|date|after_or_equal:from',
         ]);
 
         $from = $request->from;
-        $to   = $request->to;
+        $to = $request->to;
 
         // Reusable date filter: applies From/To to any query on any date column
         $range = fn ($query, $column) => $query
             ->when($from, fn ($q) => $q->whereDate($column, '>=', $from))
-            ->when($to,   fn ($q) => $q->whereDate($column, '<=', $to));
+            ->when($to, fn ($q) => $q->whereDate($column, '<=', $to));
 
         // Summary cards (the database does the adding)
-        $totalSales     = $range(Sale::query(), 'sale_date')->sum('total');
+        $totalSales = $range(Sale::query(), 'sale_date')->sum('total');
         $totalPurchases = $range(Purchase::query(), 'purchase_date')->sum('total');
 
         // Cost of the goods that were sold = quantity sold x product cost price
@@ -35,7 +35,7 @@ class ReportController extends Controller
             ->join('sales', 'sales.id', '=', 'sale_items.sale_id')
             ->join('products', 'products.id', '=', 'sale_items.product_id')
             ->when($from, fn ($q) => $q->whereDate('sales.sale_date', '>=', $from))
-            ->when($to,   fn ($q) => $q->whereDate('sales.sale_date', '<=', $to))
+            ->when($to, fn ($q) => $q->whereDate('sales.sale_date', '<=', $to))
             ->sum(DB::raw('sale_items.quantity * products.purchase_price'));
 
         $profit = $totalSales - $costOfGoodsSold;
@@ -48,27 +48,27 @@ class ReportController extends Controller
                 'sales' => $range(Sale::query(), 'sale_date')
                     ->latest('sale_date')->get()
                     ->map(fn ($s) => (object) [
-                        'date'        => $s->sale_date->format('d M Y'),
-                        'reference'   => 'INV-' . $s->id,
+                        'date' => $s->sale_date->format('d M Y'),
+                        'reference' => 'INV-'.$s->id,
                         'description' => $s->customer_name,
-                        'amount'      => $s->total,
+                        'amount' => $s->total,
                     ]),
 
                 'purchases' => $range(Purchase::with('supplier'), 'purchase_date')
                     ->latest('purchase_date')->get()
                     ->map(fn ($p) => (object) [
-                        'date'        => $p->purchase_date->format('d M Y'),
-                        'reference'   => 'PO-' . $p->id,
+                        'date' => $p->purchase_date->format('d M Y'),
+                        'reference' => 'PO-'.$p->id,
                         'description' => $p->supplier->name ?? '-',
-                        'amount'      => $p->total,
+                        'amount' => $p->total,
                     ]),
 
                 'stock' => Product::orderBy('name')->get()
                     ->map(fn ($p) => (object) [
-                        'date'        => $p->updated_at->format('d M Y'),
-                        'reference'   => $p->sku,
+                        'date' => $p->updated_at->format('d M Y'),
+                        'reference' => $p->sku,
                         'description' => "{$p->name} ({$p->quantity} in stock)",
-                        'amount'      => $p->quantity * $p->purchase_price,
+                        'amount' => $p->quantity * $p->purchase_price,
                     ]),
             };
         }

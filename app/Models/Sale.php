@@ -12,7 +12,7 @@ class Sale extends Model
     {
         return [
             'sale_date' => 'date',
-            'total'     => 'decimal:2',
+            'total' => 'decimal:2',
         ];
     }
 

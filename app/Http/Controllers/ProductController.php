@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\StockMovement;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
-use App\Models\StockMovement;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class ProductController extends Controller
 {
@@ -18,7 +18,7 @@ class ProductController extends Controller
             ->when($request->search, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('name', 'like', "%{$search}%")
-                      ->orWhere('sku', 'like', "%{$search}%");
+                        ->orWhere('sku', 'like', "%{$search}%");
                 });
             })
             ->latest()
@@ -32,52 +32,52 @@ class ProductController extends Controller
     {
         return view('products.create', [
             'categories' => Category::orderBy('name')->get(),
-            'suppliers'  => Supplier::orderBy('name')->get(),
+            'suppliers' => Supplier::orderBy('name')->get(),
         ]);
     }
 
     public function store(Request $request)
-{
-    $data = $request->validate($this->rules());
+    {
+        $data = $request->validate($this->rules());
 
-    DB::transaction(function () use ($data) {
-        $product = Product::create($data);
+        DB::transaction(function () use ($data) {
+            $product = Product::create($data);
 
-        // Opening stock is also a stock movement, so history adds up
-        if ($product->quantity > 0) {
-            StockMovement::create([
-                'product_id' => $product->id,
-                'user_id'    => auth()->id(),
-                'type'       => 'opening',
-                'quantity'   => $product->quantity,
-            ]);
-        }
-    });
+            // Opening stock is also a stock movement, so history adds up
+            if ($product->quantity > 0) {
+                StockMovement::create([
+                    'product_id' => $product->id,
+                    'user_id' => auth()->id(),
+                    'type' => 'opening',
+                    'quantity' => $product->quantity,
+                ]);
+            }
+        });
 
-    return redirect()->route('products.index')
-        ->with('success', 'Product added.');
-}
+        return redirect()->route('products.index')
+            ->with('success', 'Product added.');
+    }
 
     public function edit(Product $product)
     {
         return view('products.edit', [
-            'product'    => $product,
+            'product' => $product,
             'categories' => Category::orderBy('name')->get(),
-            'suppliers'  => Supplier::orderBy('name')->get(),
+            'suppliers' => Supplier::orderBy('name')->get(),
         ]);
     }
 
     public function update(Request $request, Product $product)
-{
-    $data = $request->validate($this->rules($product->id));
+    {
+        $data = $request->validate($this->rules($product->id));
 
-    unset($data['quantity']); // stock is never changed from this form
+        unset($data['quantity']); // stock is never changed from this form
 
-    $product->update($data);
+        $product->update($data);
 
-    return redirect()->route('products.index')
-        ->with('success', 'Product updated.');
-}
+        return redirect()->route('products.index')
+            ->with('success', 'Product updated.');
+    }
 
     public function destroy(Product $product)
     {
@@ -89,16 +89,16 @@ class ProductController extends Controller
     private function rules(?int $ignoreId = null): array
     {
         return [
-            'name'           => 'required|string|max:150',
-            'sku'            => ['required', 'string', 'max:50',
-                                 Rule::unique('products', 'sku')->ignore($ignoreId)],
-            'description'    => 'nullable|string|max:1000',
-            'category_id'    => 'required|exists:categories,id',
-            'supplier_id'    => 'nullable|exists:suppliers,id',
+            'name' => 'required|string|max:150',
+            'sku' => ['required', 'string', 'max:50',
+                Rule::unique('products', 'sku')->ignore($ignoreId)],
+            'description' => 'nullable|string|max:1000',
+            'category_id' => 'required|exists:categories,id',
+            'supplier_id' => 'nullable|exists:suppliers,id',
             'purchase_price' => 'required|numeric|min:0',
-            'selling_price'  => 'required|numeric|min:0',
-            'quantity'       => 'required|integer|min:0',
-            'reorder_level'  => 'required|integer|min:0',
+            'selling_price' => 'required|numeric|min:0',
+            'quantity' => 'required|integer|min:0',
+            'reorder_level' => 'required|integer|min:0',
         ];
     }
 }

@@ -31,27 +31,27 @@ class SaleController extends Controller
 
         $data = $request->validate([
             'customer_name' => 'required|string|max:100',
-            'date'          => 'required|date',
-            'product_id'    => 'required|array|min:1',
-            'product_id.*'  => 'required|exists:products,id',
-            'quantity'      => "required|array|size:$lines",
-            'quantity.*'    => 'required|integer|min:1',
-            'price'         => "required|array|size:$lines",
-            'price.*'       => 'required|numeric|min:0',
+            'date' => 'required|date',
+            'product_id' => 'required|array|min:1',
+            'product_id.*' => 'required|exists:products,id',
+            'quantity' => "required|array|size:$lines",
+            'quantity.*' => 'required|integer|min:1',
+            'price' => "required|array|size:$lines",
+            'price.*' => 'required|numeric|min:0',
         ]);
 
         $sale = DB::transaction(function () use ($data) {
             $sale = Sale::create([
-                'user_id'       => auth()->id(),
+                'user_id' => auth()->id(),
                 'customer_name' => $data['customer_name'],
-                'sale_date'     => $data['date'],
-                'total'         => 0,
+                'sale_date' => $data['date'],
+                'total' => 0,
             ]);
 
             $total = 0;
 
             foreach ($data['product_id'] as $i => $productId) {
-                $qty   = (int) $data['quantity'][$i];
+                $qty = (int) $data['quantity'][$i];
                 $price = (float) $data['price'][$i];
 
                 // Lock this product row until the transaction ends
@@ -61,19 +61,19 @@ class SaleController extends Controller
                 if ($product->quantity < $qty) {
                     throw ValidationException::withMessages([
                         'quantity' => "Not enough stock for {$product->name}. "
-                                    . "Available: {$product->quantity}, requested: {$qty}.",
+                                    ."Available: {$product->quantity}, requested: {$qty}.",
                     ]);
                 }
 
                 $subtotal = round($qty * $price, 2);
-                $total   += $subtotal;
+                $total += $subtotal;
 
                 // 1. Save the line item
                 $sale->items()->create([
                     'product_id' => $product->id,
-                    'quantity'   => $qty,
+                    'quantity' => $qty,
                     'unit_price' => $price,
-                    'subtotal'   => $subtotal,
+                    'subtotal' => $subtotal,
                 ]);
 
                 // 2. Decrease stock
@@ -81,10 +81,10 @@ class SaleController extends Controller
 
                 // 3. Record the history (negative = stock out)
                 StockMovement::create([
-                    'product_id'   => $product->id,
-                    'user_id'      => auth()->id(),
-                    'type'         => 'sale',
-                    'quantity'     => -$qty,
+                    'product_id' => $product->id,
+                    'user_id' => auth()->id(),
+                    'type' => 'sale',
+                    'quantity' => -$qty,
                     'reference_id' => $sale->id,
                 ]);
             }

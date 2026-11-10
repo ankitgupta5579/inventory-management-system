@@ -11,14 +11,14 @@ class CategoryController extends Controller
     public function index()
     {
         return view('categories.index', [
-        'categories' => Category::withCount('products')->latest()->get(),
-    ]);
+            'categories' => Category::withCount('products')->latest()->get(),
+        ]);
     }
 
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name'        => 'required|string|max:100|unique:categories,name',
+            'name' => 'required|string|max:100|unique:categories,name',
             'description' => 'nullable|string|max:500',
         ]);
 
@@ -30,8 +30,8 @@ class CategoryController extends Controller
     public function update(Request $request, Category $category)
     {
         $data = $request->validate([
-            'name'        => ['required', 'string', 'max:100',
-                              Rule::unique('categories', 'name')->ignore($category->id)],
+            'name' => ['required', 'string', 'max:100',
+                Rule::unique('categories', 'name')->ignore($category->id)],
             'description' => 'nullable|string|max:500',
         ]);
 
@@ -43,11 +43,11 @@ class CategoryController extends Controller
     public function destroy(Category $category)
     {
         if ($category->products()->exists()) {
-        return back()->with('error', 'Cannot delete: this category still has products.');
+            return back()->with('error', 'Cannot delete: this category still has products.');
         }
 
         $category->delete();
 
-    return back()->with('success', 'Category deleted.');
+        return back()->with('success', 'Category deleted.');
     }
 }
