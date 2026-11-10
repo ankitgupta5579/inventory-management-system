@@ -20,14 +20,12 @@
         <li><a class="nav-link {{ request()->routeIs('sales.*') ? 'active' : '' }}" href="{{ route('sales.index') }}">
             <i class="bi bi-receipt"></i> Sales & Billing</a></li>
 
-        {{-- TODO: un-comment when Reports is built
-        <li class="section-title">Analysis</li>
-        <li><a class="nav-link {{ request()->routeIs('reports.*') ? 'active' : '' }}" href="{{ route('reports.index') }}">
-            <i class="bi bi-graph-up"></i> Reports</a></li>
-        --}}
-
         {{-- Only admins see this part --}}
         @if(auth()->user()->role === 'admin')
+            <li class="section-title">Analysis</li>
+            <li><a class="nav-link {{ request()->routeIs('reports.*') ? 'active' : '' }}" href="{{ route('reports.index') }}">
+                <i class="bi bi-graph-up"></i> Reports</a></li>
+
             <li class="section-title">Admin Panel</li>
             <li><a class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}" href="{{ route('admin.users.index') }}">
                 <i class="bi bi-people"></i> Manage Users</a></li>
