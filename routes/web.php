@@ -1,15 +1,15 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\UserController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PurchaseController;
-use App\Http\Controllers\SaleController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\SaleController;
+use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Route;
 
 // Only for visitors who are NOT logged in
 Route::middleware('guest')->group(function () {
@@ -23,22 +23,22 @@ Route::middleware('guest')->group(function () {
 // Only for logged-in users
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
+    Route::resource('categories', CategoryController::class)->except(['create', 'show', 'edit']);
+    Route::resource('suppliers', SupplierController::class)->except(['show']);
+    Route::resource('products', ProductController::class)->except(['show']);
+    Route::resource('purchases', PurchaseController::class)->only(['index', 'create', 'store']);
+    Route::resource('sales', SaleController::class)->only(['index', 'create', 'store', 'show']);
+
     // Only for admins (auth + admin)
-    Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
-        Route::get('/users', [UserController::class, 'index'])->name('users.index');
-        Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
-        Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+    Route::middleware('admin')->group(function () {
+        Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+
+        Route::prefix('admin')->name('admin.')->group(function () {
+            Route::get('/users', [UserController::class, 'index'])->name('users.index');
+            Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+            Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+        });
     });
 });
-
-Route::resource('categories', CategoryController::class)->except(['create', 'show', 'edit']);
-Route::resource('suppliers', SupplierController::class)->except(['show']);
-Route::resource('products', ProductController::class)->except(['show']);
-Route::resource('purchases', PurchaseController::class)->only(['index', 'create', 'store']);
-Route::resource('sales', SaleController::class)->only(['index', 'create', 'store', 'show']);
-Route::get('/reports', [ReportController::class, 'index'])
-    ->middleware('admin')
-    ->name('reports.index');
