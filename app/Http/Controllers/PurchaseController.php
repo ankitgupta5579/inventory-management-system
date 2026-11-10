@@ -26,6 +26,12 @@ class PurchaseController extends Controller
         ]);
     }
 
+            public function show(Purchase $purchase)
+        {
+            $purchase->load('items.product', 'supplier', 'user');
+
+            return view('purchases.show', compact('purchase'));
+        }
     public function store(Request $request)
     {
         $lines = count((array) $request->product_id);
