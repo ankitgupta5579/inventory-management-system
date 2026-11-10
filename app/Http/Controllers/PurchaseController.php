@@ -81,9 +81,11 @@ class PurchaseController extends Controller
 
             // 4. Save the real total, calculated by the server
             $purchase->update(['total' => $total]);
+            return $purchase;
         });
 
-        return redirect()->route('purchases.index')
-            ->with('success', 'Purchase saved and stock updated.');
+        return redirect()->route('purchases.show', $purchase)
+        ->with('success', 'Purchase saved and stock updated.');
     }
+
 }

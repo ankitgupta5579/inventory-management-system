@@ -13,7 +13,7 @@
             <tbody>
             @forelse($purchases as $purchase)
                 <tr>
-                    <td>#{{ $purchase->id }}</td>
+                    <td><a href="{{ route('purchases.show', $purchase) }}">#{{ $purchase->id }}</a></td>
                     <td>{{ $purchase->purchase_date->format('d M Y') }}</td>
                     <td>{{ $purchase->supplier->name ?? '-' }}</td>
                     <td>₹{{ number_format($purchase->total, 2) }}</td>

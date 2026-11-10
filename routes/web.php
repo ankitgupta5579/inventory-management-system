@@ -42,3 +42,4 @@ Route::middleware('auth')->group(function () {
         });
     });
 });
+Route::resource('purchases', PurchaseController::class)->only(['index', 'create', 'store', 'show']);
