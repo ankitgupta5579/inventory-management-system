@@ -30,6 +30,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('products', ProductController::class)->except(['show']);
     Route::resource('purchases', PurchaseController::class)->only(['index', 'create', 'store']);
     Route::resource('sales', SaleController::class)->only(['index', 'create', 'store', 'show']);
+    Route::resource('purchases', PurchaseController::class)->only(['index', 'create', 'store', 'show']);
 
     // Only for admins (auth + admin)
     Route::middleware('admin')->group(function () {
@@ -42,4 +43,3 @@ Route::middleware('auth')->group(function () {
         });
     });
 });
-Route::resource('purchases', PurchaseController::class)->only(['index', 'create', 'store', 'show']);

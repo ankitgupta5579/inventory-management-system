@@ -26,12 +26,13 @@ class PurchaseController extends Controller
         ]);
     }
 
-            public function show(Purchase $purchase)
-        {
-            $purchase->load('items.product', 'supplier', 'user');
+    public function show(Purchase $purchase)
+    {
+        $purchase->load('items.product', 'supplier', 'user');
 
-            return view('purchases.show', compact('purchase'));
-        }
+        return view('purchases.show', compact('purchase'));
+    }
+
     public function store(Request $request)
     {
         $lines = count((array) $request->product_id);
@@ -47,7 +48,7 @@ class PurchaseController extends Controller
             'price.*' => 'required|numeric|min:0',
         ]);
 
-        DB::transaction(function () use ($data) {
+        $purchase = DB::transaction(function () use ($data) {
             $purchase = Purchase::create([
                 'supplier_id' => $data['supplier_id'],
                 'user_id' => auth()->id(),
@@ -87,11 +88,11 @@ class PurchaseController extends Controller
 
             // 4. Save the real total, calculated by the server
             $purchase->update(['total' => $total]);
+
             return $purchase;
         });
 
         return redirect()->route('purchases.show', $purchase)
-        ->with('success', 'Purchase saved and stock updated.');
+            ->with('success', 'Purchase saved and stock updated.');
     }
-
 }
